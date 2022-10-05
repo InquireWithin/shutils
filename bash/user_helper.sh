@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-#Written by Luke Bettner
 clear
 printf "********************\n****SHELL HELPER****\n********************\n"
 #user selection

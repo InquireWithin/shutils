@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-[ ! -n $1 ] &&
+[ -z $1 ] &&
 git add . &&
 git commit -m . &&
 git push &&
@@ -8,12 +8,12 @@ exit 0
 while getopts 'a:m:' OPT; do
     case "$OPT" in
         a)
-            [ -z $OPT ] && git add . ||
-            git add $OPT
+            [ -z $OPTARG ] && git add . ||
+            git add $OPTARG
             ;;
         m)
-            [ -z $OPT ] && git commit -m . ||
-            git commit -m $OPT
+            [ -z $OPTARG ] && git commit -m . ||
+            git commit -m $OPTARG
             ;;
         *)
             echo "usage: $0 [ -a path ] [ -m commit message ]" >&2 && exit 1
