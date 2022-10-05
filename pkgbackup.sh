@@ -8,11 +8,10 @@
 #User who doesnt use an AUR helper, and home folder
 #sh nameofthisscript.sh ~ 1
 #
-#meant for arch-based systems
+#meant for arch-based systems of course, originally used on artix base
 
 #be aware that the first command line argument's path is relative to the current user's $HOME
 TARGETDIR=
-BASESYS=
 cd $HOME
 ([[ -n $1 ]] && [[ "$1" != "1" ]]) && TARGETDIR="$1" || TARGETDIR=$HOME
 !([[ -d "$TARGETDIR" ]]) && mkdir "$TARGETDIR"
@@ -22,11 +21,11 @@ AUR_HELPER=pacman #default
 #if command line option 2 is not length of 0, set AUR_HELPER to ARG2
 ([[ -z $2 ]] && [[ -e "/bin/$2" ]] || [[ $2 == '1' ]]); [[ $? -eq 1 ]] && AUR_HELPER=$2
 echo "AUR Helper: $AUR_HELPER"
-#[[ $3 == '-f' ]] || [[ $3 == '1' ]] && echo "using AUR HELPER $AUR_HELPER and $TARGETDIR. Is this OK? (y/n): " ; read yn; yn='n' && sh $0
+[[ $3 == '-f' ]] || [[ $3 == '1' ]] && echo "using AUR HELPER $AUR_HELPER and $TARGETDIR. Is this OK? (y/n): " ; read yn && $yn='n' && sh $0 
 echo "backing up..."
 /bin/$AUR_HELPER -Qqe > "$TARGETDIR/package_list.txt"
-#native package backup only
-#$AUR_HELPER -Qqen > "$TARGETDIR/package_list.txt"
+#native package backup only (check what 'native' includes and excludes, pacman packages only? or only 'core' packages like base, base-devel, etc. All AUR packages are guaranteed excluded)
+#/bin/$AUR_HELPER -Qqen > "$TARGETDIR/package_list.txt" 
 
 
 
