@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+#This small bash script is intended to do an incredibly simple backup of a specified directory to a .bkup directory in home.
+#Exit script if # of args is not 0 or 1
+[[ $# -gt 1 ]] && echo "USAGE: $0 [directory]" && echo "Invalid number of args" >&2 && exit 1 || 
+	#if no arguments, backup current directory
+	[[ $# -eq 0 ]] && DIR=$(pwd) ||
+	#if one argument, backup the directory specified in argument 1
+      	DIR=$1
+#if specified argument isnt a directory, exit w/ code 2
+[[ ! -d $DIR ]] && echo "USAGE: $0 [directory]" && echo "argument must be a directory" >&2 && exit 2
+#if .bkup exists in home, but not a directory, do nothing but print error message and exit w/ code 3
+[[ -e $HOME/.bkup ]] && [[ ! -d $HOME/.bkup ]] && echo "$HOME/.bkup is not a directory" >&2 && exit 3
+#if .bkup exists in home, delete it recursively
+[[ -d $HOME/.bkup ]] && echo "$HOME/.bkup alredy exists, removing..." && rm -rfv $HOME/.bkup
+mkdir $HOME/.bkup
+#do the backup for whatever directory is assigned to $DIR
+cp -riv $DIR $HOME/.bkup
+echo "Backup complete."
+
+
+
+

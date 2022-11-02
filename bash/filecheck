@@ -1,0 +1,44 @@
+#!/bin/bash
+#purpose of this is to take inputs of specified paths, and will analyze them
+
+#repeating silent prompt
+while read OBJNAME; do
+	#if object is known to exist. Filter out the type of object from here.
+	if [[ -e $OBJNAME ]]; then
+		#need these variables for later usage. Var names explain themselves.
+		FULLPATH="$(readlink -f $OBJNAME)"
+		LOCATION="$(dirname $FULLPATH)"
+		FILEINFO="$(file $FULLPATH)"	
+		#object is a directory	
+		if [[ -d $OBJNAME ]]; then	
+			printf "FULL PATH:\t$FULLPATH\n"
+			printf "LOCATED IN:\t$LOCATION\n"
+			#object is either not readable and/or not executable, tell the user and exit program. only print contents if readable or executable
+			[[ ! -x $OBJNAME ]] || [[ ! -r $OBJNAME ]] && echo "$OBJNAME is not readable and/or executable" || printf "\n--------------------\n$(date) :: DIRECTORY\n-------------------\n" && printf "\nCONTAINS:\n--------\n$(ls -Ral $OBJNAME)\n"	
+		#object is a regular file	
+		elif [[ -f $OBJNAME ]]; then
+			printf "\n--------------------\n$(date) :: REGULAR FILE\n-------------------\n"
+			printf "FULL PATH:\t$FULLPATH\n"
+			printf "LOCATED IN:\t$LOCATION\n"
+			#check if that file is readible, inform user via stderr and stdout, exit
+			#only print FILEINFO if accessible
+			[[ ! -r $OBJNAME ]] && echo "regular flle, no read permission" && echo "$(date) :: $OBJENAME is a regular file, but cannot be accessed" >/dev/null 1>&2 || echo $FILEINFO
+	#unknown object type, simply check if its accessible
+		elif [[ -r $OBJNAME ]]; then
+			printf "\n--------------------\n$(date) :: UNKNOWN OBJECT TYPE\n-------------------\n"
+			printf "FULL PATH:\t$FULLPATH\n"
+			printf "LOCATED IN:\t$LOCATION\n"
+			echo $FILEINFO
+			echo "$(date) :: $OBJNAME is of unknown type." >/dev/null 1>&2 
+	# obj is unknown type and inaccessible	
+		else
+			printf "\n--------------------\n$(date) :: UNKNOWN, INACCESSIBLE OBJECT TYPE\n-------------------\n"
+			printf "FULL PATH:\t$FULLPATH\n"
+			printf "LOCATED IN:\t$LOCATION\n"
+			echo "$(date) :: $OBJNAME is of unknown type and inaccessible." >/dev/null 1>&2 
+		fi		
+	#at this point the object type does not exist.
+	else
+		echo "$(date) :: $OBJNAME does not exist." >/dev/null 1>&2 
+	fi
+done
