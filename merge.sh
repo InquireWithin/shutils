@@ -1,4 +1,6 @@
 #!/usr/bin/sh
+#TODO: check for duplicate files when merging
+
 #merges two or more directories, keeps differences between them, into a single, updated, directory
 # $1 - target dir 1, $2 - target dir 2, $n - target dir n
 # -n "exname" will merge into a new directory with the path exname. the first argument after -n will be that directory.
@@ -8,8 +10,6 @@
 [ $# -lt 2 ] && echo "USAGE: $0 [ -D ] [ -n new_directory_path ] dir1 dir2 ... dir n" 1>&2 && exit 1
 declare -a args=("$@")
 declare -i COUNT=0
-#-D option specified
-DELETE='false'
 #name of new directory, unknown until the point that user may or may not give it on the command line or manually here
 NEWDIR=
 #use the last directory the user specified
@@ -18,9 +18,8 @@ LASTDIR='true'
 declare -a dirs
 while [ $COUNT -lt $# ]; do
     if [[ ${args[$COUNT]} = '-D' ]]; then 
-        DELETE='true' #delete option specified, narrow down from here
         #TODO: allow user to delete specified directories (maybe all directories specified after -D is invoked as long as -n is specified with an argument after?)
-        [[ -z ${args[$COUNT+1]} ]] && DELALL='true'
+        DELALL='true'
     fi
     #if the next argument after a -n specified does exist, set the newdir to the argument after -n
     #or, if -n is specified but theres nothing after it, echo the error message out. set lastdir to true (use the last directory specified to merge into)
