@@ -1,8 +1,7 @@
 #!/bin/sh
 #$1 is the process to kill for current user that needs to be killed
 #this loop will only kill processes with name $1 and only belonging to the current user
-for i in `ps -aux | grep "^"$USER".*[ ]*"$1"$" | sed -E 's/^[^ ]*  [ ]//' | sed -E 's/ .*//'`; do
-
+for i in `ps -aux | grep "^"$USER".*[ ]*"$1"$" | sed -E 's/^[^ ]* *[ ]//' | sed -E 's/ .*//' | sort`; do
 	echo $i
 	kill -9 $i
 done
